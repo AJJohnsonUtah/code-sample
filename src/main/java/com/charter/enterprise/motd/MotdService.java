@@ -1,10 +1,11 @@
 package com.charter.enterprise.motd;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 /**
- * This service handles the message of the day 
- * 
+ * This service handles the message of the day
+ *
  * @author AJ Johnson
  */
 @Service
@@ -18,6 +19,8 @@ public class MotdService {
     }
 
     public void setMessageOfTheDay(String messageOfTheDay) {
+        // TODO: Consider escaping HTML chars to prevent a malicious motd
+        // like this --> HtmlUtils.htmlEscape(messageOfTheDay);
         this.messageOfTheDay = messageOfTheDay;
     }
 

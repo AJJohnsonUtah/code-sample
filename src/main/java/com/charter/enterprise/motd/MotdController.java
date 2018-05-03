@@ -32,10 +32,10 @@ public class MotdController {
      */
     @PutMapping
     public HttpEntity<String> setMotd(@RequestBody String updatedMessage) {
-        if (updatedMessage == null || updatedMessage.isEmpty()) {
+        if (updatedMessage == null || updatedMessage.trim().isEmpty()) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        motdService.setMessageOfTheDay(updatedMessage);
+        motdService.setMessageOfTheDay(updatedMessage.trim());
         return new ResponseEntity<>("Message has been set", HttpStatus.OK);
     }
 

@@ -66,4 +66,15 @@ public class MotdControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(equalTo(defaultMessage)));
     }
+
+    /**
+     * Setting a Motd of just whitespace should fail
+     *
+     * @throws Exception
+     */
+    @Test
+    public void setWhitespaceMotd() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.put("/").content("    "))
+                .andExpect(status().isBadRequest());
+    }
 }
