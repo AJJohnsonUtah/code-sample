@@ -1,14 +1,13 @@
 # Charter Enterprise MOTD Sample Project
-A small project to help assess candidate experience with webservices and our technology stack.
+A small project to allow users to view and publish a Message of the Day.
 
-## Instructions
-We have provided a webservice that provides a "message of the day", similar to what you might see logging into a Unix system. Unfortuantely, at Charter things don't always go as planned and we need to change the message.  We need you to add the abilty to change the message.   The message can be stored in the service using any mechanism you like, but aim for simplicity.  Something very simple, and in memory can be used.   It does not have to be durable between restarts, so please avoid writing to a file.  A persistent store like MySQL or Hypersonic could be overkill for this new requirement.  Iterative requests for the MOTD should return the new message, if it has been changed. Be sure to edit this README.md so we understand what you've done.
+## Prerequisites
+* Java 1.8
+* Maven
+* cURL
+* Docker
 
-Also, a rogue developer has left the code base broken.  To get anything done, you're doing to have to fix the tests first! And, no, -DskipTests is not a solution!
-
-Push your answer to this Github repo as a feature branch and create a pull request so we know you're done.
-
-### Getting Started
+## Getting Started
 * To compile
 ```mvn clean package```
 
@@ -18,16 +17,15 @@ Push your answer to this Github repo as a feature branch and create a pull reque
 * To see the message:
 ```curl localhost:8080```
 
-### Prerequisites
-* Java 1.8
-* Maven
-* cURL
-  
-### Deployment
-If you whiz through this sample, try adding a deployment.   We are a Docker and AWS shop.  Getting something into an AWS or Heroku, or whatever you're comfortable with will be an "A+"
+* To set the message:
+```curl -X PUT -d 'SAMPLE MESSAGE OF THE DAY' localhost:8080```
+ **Note:** The webservice will return a 400 error if you try to set the message to be empty, because that would be a dull message of the day!
 
-### Project hints and questions
-* Stuck getting started?
-  * The official Spring Boot "hello world" example is a great starting point.
-* Still need help?
-  * Further hints are available, Feel free to ask questions here.  Edit this file in your branch by adding to the questions section, push it, and we will update the file with answers. 
+## Deployment
+This has been [deployed](http://35.231.44.200:8080) using Docker on Google Cloud Platform. Either build the jar file locally on the server to deploy, or transfer the jar file and [Dockerfile](Dockerfile) to the server (by default, the built jar file is located at /target/motd-code-sample-1.0-SNAPSHOT.jar). Navigate to the directory containing the jar file and the Dockerfile.
+
+* To build the Docker image:
+```docker build --tag=motd-server --build-arg JAR_FILE=motd-code-sample-1.0-SNAPSHOT.jar .```
+
+* To run the Docker image:
+```sudo docker run --publish=8080:8080 -d motd-server```
