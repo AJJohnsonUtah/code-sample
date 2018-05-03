@@ -17,13 +17,53 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MotdControllerTest {
+
     @Autowired
     private MockMvc mvc;
 
+    String defaultMessage = "Welcome to Charter.  All systems are nominal.";
+
+    /**
+     * Requesting the Motd without changing it should return the default Motd
+     *
+     * @throws Exception
+     */
     @Test
     public void getMotd() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(equalTo("Goodbye world!")));
+                .andExpect(content().string(equalTo(defaultMessage)));
+    }
+
+    /**
+     * Setting a non-empty Motd should update the saved Motd
+     *
+     * @throws Exception
+     */
+    @Test
+    public void setMotd() throws Exception {
+        String updatedMessage = "This is the new message.";
+        mvc.perform(MockMvcRequestBuilders.put("/").content(updatedMessage))
+                .andExpect(status().isOk())
+                .andExpect(content().string(equalTo("Message has been set")));
+
+        mvc.perform(MockMvcRequestBuilders.get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(equalTo(updatedMessage)));
+    }
+
+    /**
+     * Setting an empty Motd should error and NOT update the saved Motd
+     *
+     * @throws Exception
+     */
+    @Test
+    public void setEmptyMotd() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.put("/").content(""))
+                .andExpect(status().isBadRequest());
+
+        mvc.perform(MockMvcRequestBuilders.get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(equalTo(defaultMessage)));
     }
 }
